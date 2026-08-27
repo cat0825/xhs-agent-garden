@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+
+# Obsidian workspace (local state)
+.obsidian/workspace.json
+.obsidian/workspace-mobile.json
+.obsidian/plugins/*/data.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Trash
+.trash/
+
+# Temporary files
+*.tmp
+*.bak

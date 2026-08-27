@@ -1,0 +1,28 @@
+<script>
+    (function () {
+        function getTheme() {
+            return document.documentElement.dataset.eririTheme || "dark";
+        }
+
+        function applyTheme(theme) {
+            document.documentElement.dataset.eririTheme = theme;
+            document.body.classList.toggle("theme-light", theme === "light");
+            document.body.classList.toggle("theme-dark", theme !== "light");
+            localStorage.setItem("eriri-theme", theme);
+            document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+                const isLight = theme === "light";
+                button.setAttribute("aria-pressed", String(isLight));
+                button.title = isLight ? "切换到深色模式" : "切换到浅色模式";
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            applyTheme(getTheme());
+            document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
+                button.addEventListener("click", function () {
+                    applyTheme(getTheme() === "light" ? "dark" : "light");
+                });
+            });
+        });
+    })();
+</script>

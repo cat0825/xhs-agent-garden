@@ -1,0 +1,107 @@
+---
+title: "字节Anget实习一面。"
+tags:
+  - 小红书
+  - AI-Agent
+  - 面经
+  - 求职
+permalink: "/note/xhs-6a3a733c/"
+---
+
+# 字节Anget实习一面。
+
+> [!info] 元数据
+> - **作者**：程序员随风
+> - **分类**：面经
+> - **抓取时间**：2026-07-25T06:45:37.076Z
+> - **原文**：[打开小红书笔记](https://www.xiaohongshu.com/explore/6a3a733c000000001100709f
+> - **互动**：112 / 174 / 评论
+
+## 正文
+
+一面围绕 AI Agent 项目连续深挖，从 RAG、MCP、Skill、Harness 一直问到 Redis 一致性、分布式锁、ZSet、MySQL 索引，最后还加了一道组合总和代码题。整体更看重工程落地，而不是背概念。#面经 #Anget面试 #Java面试
+
+#面经 #Anget面试 #Java面试
+
+## 长图内容（视觉重读）
+
+> [!note] 由 AI 视觉重读截图整理，替代原 tesseract OCR 乱码。图 p02 为 18 题清单（60min），p03–p05、p01 为逐题回答卡片。
+
+### 字节 Agent 实习一面（60min）— 题目与博主回答
+
+**1. 自我介绍**：27 届 211 硕二在读，方向是 Java 后端开发、AI Agent 应用落地和多模态算法工程化。实习做过智能康复训练平台（模型训练、边缘端部署、多模态数据处理），核心项目是 AI 长文创作与会员拼团平台（后端做会员、拼团、锁单、库存、消息补偿链路；AI 侧用 RAG 解决长文生成稳定性）。
+
+**2. AI 长文创作平台里怎么搭建 Agent 工作流并提升生成准确性？**
+把长文生成拆成 Planner、RAG、Writer、Reviewer、Repair、Save 几个节点，用 LangGraph 做有状态编排，不让模型一次性把所有事情做完。准确率主要靠分层记忆和审稿修复：短期记忆放最近章节，长期记忆放人物设定和世界观，Reviewer 发现冲突后进入 Repair，实际比单轮生成稳定很多。
+
+**3. 项目里实际用到了哪些 Agent 技术能力？**
+Workflow 编排（控制生成流程）、Memory 管理（解决长篇设定遗忘）、RAG 检索（召回历史章节和角色卡）、Tool Calling（查章节、存内容、更新状态、调业务接口）。
+
+**4. 怎么看最近 Agent 技术的发展方向，哪些更容易工程落地？**
+更看好 Workflow Agent、Agent + RAG 和工程化 Runtime。单纯靠 Prompt 很难稳定上线，真正落地依赖任务拆分、知识召回、工具调用和失败修复。现在 Agent 越来越像一个分布式任务系统，不只是模型调用。
+
+**5. 如果要给 Agent 生成一个 Skill，并通过 MCP 接入外部能力，怎么设计？**
+先定义 Skill 的能力边界（描述、输入、输出、触发条件），再把真实能力封装成 Tool（查询章节、保存内容、检索角色设定）。MCP 这层做标准化接入：服务端暴露 Tool Schema，Agent Runtime 注册这些能力，执行时按任务动态调用，同时限制权限和超时。
+
+**6. 从工程化角度看，Agent Harness 主要解决哪些问题？**
+主要解决评测、观测和回放。Agent 有随机性，不能只看一次输出；工程上要看任务完成率、Tool 调用成功率、延迟、成本和错误链路，最好能把每一步 Prompt、模型输出、Tool 入参都 Trace 出来。
+
+**7. 如果一个 Agent 需要调用另一个 Agent，怎么做编排和防失控？**
+不让两个 Agent 直接互调，加一层 Orchestrator 做任务拆分和调度。固定流程用 LangGraph 画节点，复杂任务用消息队列异步通信。防失控靠 max depth、timeout、retry limit，避免 A 调 B、B 又反过来调 A。
+
+**8. 智能康复训练平台解决什么业务问题，你负责什么？**
+解决家庭康复训练里动作是否标准、注意力是否稳定的问题。负责代偿动作识别、数据处理和模型部署。系统结合骨架点、IMU、视线状态和疼痛反馈，给训练难度做动态调整，重点是让模型能力跑在真实设备上。
+
+**9. 康复平台用到哪些模型和工程技术？**
+模型侧 PyTorch、GCN、Transformer，用骨架点建模人体结构、IMU 捕捉动作变化；工程侧做边缘端推理部署和视线估计模型优化。最大的坑不是模型结构，而是多模态数据时间戳对齐。
+
+**10. Redis 在平台里主要解决了哪些问题？**
+拼团锁单、库存预扣、分布式锁、热点配置和动态配置通知。拼团高峰先用 Redis 原子操作做库存占用，避免请求都打到 MySQL；活动规则、黑名单、限流阈值这类变化不频繁的数据也放 Redis 缓存。
+
+**11. Redis 和 MySQL 同时存业务状态，怎么保证最终一致性？**
+MySQL 是最终数据源，Redis 更多存过程态（库存预占、锁单状态），不做强一致双写。读缓存用 Cache Aside，写 MySQL 后删 Redis。库存预扣场景落库失败就释放 Redis 占用；支付和结算链路通过 RabbitMQ 重试和定时任务补偿。
+
+**12. Redis 分布式锁具体用了什么方案？**
+Redisson 和 SetNX 两类：支付回调、拼团结算这种链路较长的场景用 Redisson（有 watchdog 自动续期）；库存预占这种短耗时场景用 SetNX，性能更轻。锁粒度按 orderId 或 groupId 控制。
+
+**13. 裸 SetNX 做分布式锁有什么问题，和 Redisson 区别？**
+裸 SetNX 最大问题是锁过期时间难定、没有自动续期、有误删别人锁的风险；自己实现至少要 value 校验加 Lua 删除。Redisson 封装了续期、可重入和等待机制，复杂业务更稳；SetNX 适合短链路、轻量锁。
+
+**14. Redis 的 ZSet 底层怎么实现？**
+大数据量时是 HashTable 加 SkipList：HashTable 负责 member 到 score 的快速查询，SkipList 负责按 score 排序、范围查和排名。小数据量时用 ListPack 压缩存储，主要为了省内存。
+
+**15. MySQL 脏读和幻读分别是什么，怎么避免？**
+脏读是读到别人还没提交的数据；幻读是同一个范围查询前后查出的行数变了。避免脏读靠隔离级别（不能用 Read Uncommitted）；幻读在 InnoDB 里普通快照读靠 MVCC，当前读靠 Gap Lock 或 Next-Key Lock。
+
+**16. B 树和 B+ 树在数据库索引里的核心区别？**
+B 树每个节点都可能存 key 和 data，查找可能在中间节点命中；B+ 树非叶子节点只存 key，真实数据都在叶子节点，查询路径更稳定，叶子节点之间有链表，范围扫描更适合数据库查询。
+
+**17. 为什么 MySQL 索引用 B+ 树而不是 Redis 跳表这类结构？**
+核心是 MySQL 面向磁盘，优先减少随机 IO。B+ 树按页组织、树高低，一次查询只需少量 IO；跳表偏内存结构，指针跳转在内存里成本低，放到磁盘上容易变成大量随机访问。
+
+**18. 你对当下 Agent 能力怎么看待？**
+Agent 能力进步很快，尤其任务拆解和 Tool 调用。简单任务已能稳定落地（客服、Research、代码辅助），但复杂任务问题还很多：稳定性差、成本高、长链路容易失败，离真正通用 Agent 还有距离。
+
+**手撕**：组合总和。
+
+**反问**：如果贵团队现在推进 Agent 应用落地，线上更关注 RAG 召回质量、工具调用稳定性，还是评测体系建设？
+
+**面试感受**：主线不是单纯问八股，而是围绕一个 AI Agent 项目连续追问工程落地能力。前半段看 Agent 工作流、RAG、Skill、MCP、多 Agent 编排和 Harness；后半段切到后端基础（Redis 一致性、分布式锁、SetNX 风险、ZSet 底层、MySQL 隔离级别、B/B+ 树），整体偏项目深挖加基础扎实度。
+
+## 图片
+
+![p01.webp](/img/user/Learning/求职/小红书-AI-Agent/assets/xhs-6a3a733c/p01.webp)
+![p02.webp](/img/user/Learning/求职/小红书-AI-Agent/assets/xhs-6a3a733c/p02.webp)
+![p03.webp](/img/user/Learning/求职/小红书-AI-Agent/assets/xhs-6a3a733c/p03.webp)
+![p04.webp](/img/user/Learning/求职/小红书-AI-Agent/assets/xhs-6a3a733c/p04.webp)
+![p05.webp](/img/user/Learning/求职/小红书-AI-Agent/assets/xhs-6a3a733c/p05.webp)
+
+## 评论摘录
+
+_未抓到评论或评论区为空_
+
+## 我的批注
+
+- [ ] 是否对标上海实习主线（Agent 应用/全栈）
+- [ ] 可迁移到简历/项目的点：
+- [ ] 待补学：

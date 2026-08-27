@@ -1,0 +1,13 @@
+{
+    "tags": "note",
+    "templateEngineOverride": "md",
+    "dgHomeLink": true,
+    "dgShowBacklinks": true,
+    "dgShowLocalGraph": false,
+    "dgShowInlineTitle": true,
+    "dgShowFileTree": true,
+    "dgEnableSearch": true,
+    "dgShowToc": true,
+    "dgLinkPreview": true,
+    "dgShowTags": true
+}
