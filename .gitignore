@@ -80,3 +80,7 @@ certificates/
 
 # Twitter video downloads (uploaded to CDN manually)
 twitter_video_out/
+
+# Generated at build time (scripts/generate-rss, generate-sitemap)
+public/rss.xml
+public/sitemap.xml
