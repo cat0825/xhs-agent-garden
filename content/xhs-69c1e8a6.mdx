@@ -1,0 +1,104 @@
+---
+title: "二面已过✅字节Agent面经"
+subtitle: "面经 · 小红书笔记归档"
+slug: xhs-69c1e8a6
+date: "2026-07-25T10:00:00.000Z"
+updated: "2026-07-25T10:00:00.000Z"
+source: eriri
+categories: [面经]
+keywords: ["AI-Agent", "面经", "求职"]
+---
+<Callout variant="info" label="元数据">
+
+- **作者**：清华代码熊AI学院
+- **分类**：面经
+- **抓取时间**：2026-07-25T10:16:18Z
+- **原文**：[打开小红书笔记](https://www.xiaohongshu.com/search_result/69c1e8a6000000002301c67c)
+- **互动**：29 / 48 / 2
+
+</Callout>
+
+## 正文
+
+\#大模型 #春招 #秋招 #ai #实习 #互联网大厂 #字节跳动 #米哈游 #deepseek #大厂
+
+\#大模型 #春招 #秋招 #ai #实习 #互联网大厂 #字节跳动 #米哈游 #deepseek #大厂 #作者
+
+## 长图内容（视觉重读）
+
+<Callout variant="info">
+
+由 AI 视觉重读截图整理，替代原 tesseract OCR 乱码（按题号重排、修正错字；p02 为其他卡片的残影重复，p11/p12 为表情包）。这是「字节 AI Agent 二面面试题」16 题详解卡片（机构号整理，答案偏教材式，参考价值在题目覆盖面）。
+
+</Callout>
+
+**Q1 项目拷打**：主观题。重点准备：项目背景、技术选型理由、遇到的困难及解决方案、核心指标和结果。
+
+**Q2 多模态大模型有什么了解？**
+MLLM = 视觉编码器（ViT）+ 适配器（Adapter）+ 语言模型（LLM），核心挑战是跨模态语义对齐。架构演进：CLIP（对比预训练图文对齐）→ BLIP-2（Q-Former 压缩视觉 token）→ LLaVA（简洁 MLP Adapter）→ Qwen2.5-VL（2D-RoPE 动态分辨率 + MLP + 原生 ViT 训练）。多阶段训练：Stage 1 冻结 LLM 只训 Adapter（视觉-语言对齐），Stage 2 全参或 LoRA 微调 LLM，部分模型还有 RLHF/DPO 后训练。核心挑战：高分辨率下视觉 token 过多导致上下文爆炸（Qwen2-VL 用 PatchMerger 2x2 压缩）；幻觉来自对齐不充分；视频理解需时序建模（mRoPE 加时间维度）。
+
+**Q3 Agent skills**：主观题。参考方向：工具调用设计、规划能力、记忆机制、评估体系。
+
+**Q4 怎么加强大模型记忆机制？**
+外部记忆三层架构弥补上下文窗口限制：① 短期记忆（Working Memory）——上下文保留最近 N 轮，超长历史用摘要压缩/滑动窗口（最近 K 轮+全局摘要）/重要性过滤；② 长期记忆——重要信息向量化存入向量库（Pinecone/Milvus/Qdrant），按当前查询召回注入；代表工作 MemGPT 把 LLM 包装为内存管理器，主动控制记忆页面换入换出；③ 结构化记忆（KV Store）——Redis/数据库显式存用户偏好、任务进度、实体关系，支持精确查询；④ 知识图谱记忆——实体-关系三元组，支持多跳推理，适合法律/医疗助手。
+
+**Q5 多 Agent 执行策略的智能选择和切换机制设计**
+策略选择=路由（谁来做）：基于规则（高效但死板）→ LLM 路由器（LangGraph conditional_edge）→ 能力匹配（能力标签+历史成功率评分）。切换机制=条件触发+状态迁移：失败切换 Fallback（重试上限如 3 次，超时/错误率超阈值切备用）、置信度切换 Escalation（低置信度上报更强模型接管）、状态机驱动（LangGraph 状态转移图）。协调层：Orchestrator 管理任务 DAG、维护子任务状态、并行执行+结果聚合；每个子任务设超时+最大重试防单点阻塞。先单 Agent，遇到能力瓶颈再引入多 Agent。
+
+**Q6 SSE 的局限性**
+① 单向通信：只能服务器→客户端推送，不适合中途打断/修改请求（A2A 协议用 SSE + HTTP POST 混合方案解决）；② 连接数限制：HTTP/1.1 同域 SSE 最多 6 个连接，生产环境需 HTTP/2 多路复用；③ 不支持二进制：仅 UTF-8 文本，图像/音频需 Base64（体积 +33%），多模态流更适合 WebSocket；④ 中间件缓冲：Nginx 默认缓冲响应导致流式失效，需设 X-Accel-Buffering: no 或 Cache-Control: no-cache；⑤ 反压问题：客户端处理慢无法通知服务端限速，需应用层流控。
+
+**Q7 LoRA 效果不好怎么办？**
+按优先级排查：① 数据问题（最高优先级）——训练数据与目标任务是否对齐（领域/风格/指令格式）、数据量是否充足（1K-10K 高质量样本）、有无噪声（Loss/PPL 筛异常样本）、负样本/边界 case 覆盖；② 调超参——增大秩 r（8→32→64）、alpha=2r、降低学习率（SFT 2e-4 到 1e-5）、加 dropout（0.05-0.1）、把 LoRA 从 attention 扩展到 FFN 层；③ 任务与方法匹配——大量新知识注入时低秩假设不成立，考虑 DoRA 或全参微调；多任务考虑 MoLoRA；基础模型不具备相关能力时先 continual pretraining 再 LoRA。
+
+**Q8 RAG 动态知识更新**
+① 增量索引：新文档 embedding 直接插入向量库；HNSW（Qdrant/Milvus 默认）增量插入质量损失小，IVF 类索引会随插入退化需定期离线重聚类（Compact/Rebalance）；② 更新与删除：先逻辑删除原 chunk（deleted=true）再插入新版本，定期物理清理（Milvus Compact、Qdrant Optimize），保持 chunk-to-doc 映射支持按文档删除；③ 事件驱动更新管道：监听上游变更（数据库 CDC、文件系统 Watcher、API Webhook）→ 触发 embedding pipeline → 增量更新，分钟级已满足大多数场景；④ 时效性感知检索：chunk 元数据记录时间，检索时对过期内容降权（time-decay scoring）或过滤，时间维度单独建倒排索引支持范围查询。
+
+**Q9 大模型项目遇到了什么问题**：主观题。可从幻觉、长上下文、延迟、评估困难、数据质量、工具调用稳定性展开。
+
+**Q10 LoRA 的缺点、改进方向**
+缺点：秩 r 是任务特定超参难调；低秩假设在大量新知识注入/跨域迁移时不成立；通常只对 attention 应用而忽略 FFN；多个 LoRA 合并后不可解耦；极小数据集下可能不如 Prompt Tuning。改进：DoRA（权重分解为幅度和方向分别优化，性能比 LoRA 高约 5%）、AdaLoRA（自适应分配各层秩预算）、MoLoRA（混合专家 LoRA 按任务路由）、LoRA+（A、B 矩阵不对称学习率，B 更高）。
+
+**Q11 复杂任务执行准确率提升的评估方法**
+结果层：任务完成率、部分完成评分（按子任务打分）、LLM-as-Judge 质量评分、功能性验证（HumanEval/SWE-bench 通过率）。过程层（Agent 特有）：对比 Golden Trajectory 评估每步工具选择必要性和参数正确性、工具调用效率（同正确率下步骤越少越好）、推理链质量（检查 CoT 有无跳步/矛盾）。基准：WebArena、GAIA、AgentBench、T-bench。提升方向：按评估找短板→针对性构造困难样本 SFT/RLHF→过程奖励模型（PRM）对中间步骤打分指导 RL→对比成功/失败轨迹提炼规律。
+
+**Q12 多轮对话的实现方案**
+① 全量历史拼接（最简，适合短对话）；② 历史压缩管理：滑动窗口（最近 K 轮+早期摘要）、重要性过滤、摘要压缩，实践中窗口+摘要结合；③ 显式记忆管理：抽取关键实体/状态入 KV Store，每轮注入结构化记忆，重要信息做指代消解后存储；④ 工程实现：session 状态管理、conversation_id、按 token/轮次/重要性的裁剪策略，LangChain 的 ConversationBufferMemory / ConversationSummaryMemory 封装了常用模式。
+
+**Q13 RAG 评估方案**
+检索环节：Recall@K（最关键，&lt;70% 时生成质量无从保证）、Precision@K、MRR、NDCG。生成环节：忠实性 Faithfulness（NLI 模型或 LLM-as-Judge 检测）、答案相关性、上下文利用率。端到端框架：RAGAS（Faithfulness / Answer Relevance / Context Precision / Context Recall 四维度，业界最常用）、TruLens；数据集 HotPotQA、Natural Questions、BEIR。先优化检索再优化生成，顺序不能反。
+
+**Q14 了解过市面上有哪些智能体 Agent 吗？**
+通用任务型：Manus（2025.3，网页操作/代码执行/文件处理，GAIA 领先）、OpenAI Operator（2025.1 浏览器自动化）、Claude Projects + Agent mode（跨会话记忆、代码执行、MCP 工具调用）。编程型：Devin（首个"AI 软件工程师"）、Cursor Agent（AI-native IDE）、GitHub Copilot Workspace（issue→代码→PR 闭环）。研究型：OpenAI Deep Research / Gemini Deep Research（自主搜索文献写报告）、Perplexity Assistant。国内有 Manus、字节 Coze 等。
+
+**Q15 介绍一些 AI 大模型**
+闭源：GPT-4o/o3（多模态+推理旗舰）、Claude 3.5/3.7 Sonnet（长上下文+代码）、Gemini 1.5/2.0 Pro（百万 token 上下文）。开源：DeepSeek-R1/V3（推理最强开源，V3 是 MoE 671B 总参/37B 激活）、Qwen3（中英双语最强开源，MoE 版成本极低）、LLaMA 3.1（开源生态基础）。推理增强：DeepSeek-R1 与 OpenAI o1/o3 代表"思考型模型"（CoT + RL）。
+
+**Q16 MCP 和 Function Calling**
+Function Calling 是 LLM 调用工具的执行协议（调用层）：JSON Schema 描述函数签名，LLM 输出结构化调用请求，应用层执行后回传；无状态、单次独立、各厂商格式不同，适合轻量单工具集成。MCP 是标准化工具集成框架（集成层）：Anthropic 提出的开放标准，定义 Resources / Tools / Prompts 三层能力暴露，基于 JSON-RPC 支持双向通信、会话状态和长连接；一个 MCP Server 可被所有支持 MCP 的模型复用，消除碎片化集成。实践：快速集成单个 API 用 Function Calling，构建企业工具生态用 MCP；Function Calling 解决"怎么调"，MCP 解决"如何标准化集成"。
+
+## 图片
+
+<Image src="/static/xhs/xhs-69c1e8a6/p01.webp" alt="p01.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p02.webp" alt="p02.webp" width={1080} height={1440} />
+<Image src="/static/xhs/xhs-69c1e8a6/p03.webp" alt="p03.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p04.webp" alt="p04.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p05.webp" alt="p05.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p06.webp" alt="p06.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p07.webp" alt="p07.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p08.webp" alt="p08.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p09.webp" alt="p09.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p10.webp" alt="p10.webp" width={1080} height={1528} />
+<Image src="/static/xhs/xhs-69c1e8a6/p11.png" alt="p11.png" width={200} height={200} />
+<Image src="/static/xhs/xhs-69c1e8a6/p12.png" alt="p12.png" width={200} height={200} />
+
+## 评论摘录
+
+- **清华代码熊AI学院（作者）**：冲冲冲 🎉恭喜新加坡硕士拿下Min...
+- **清华代码熊AI学院（作者）**：加油 一面已过✅字节Agent面经
+
+## 我的批注
+
+- [ ] 是否对标上海实习主线（Agent 应用/全栈）
+- [ ] 可迁移到简历/项目的点：
+- [ ] 待补学：

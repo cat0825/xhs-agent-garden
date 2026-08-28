@@ -1,0 +1,404 @@
+---
+title: "2026.5最新Agent学习路线"
+subtitle: "学习路线 · 小红书笔记归档"
+slug: xhs-6a09a61b
+date: "2026-07-25T10:00:00.000Z"
+updated: "2026-07-25T10:00:00.000Z"
+source: eriri
+categories: [学习路线]
+keywords: ["AI-Agent", "学习路线", "求职"]
+---
+<Callout variant="info" label="元数据">
+
+- **作者**：Sizhou说
+- **分类**：学习路线
+- **抓取时间**：2026-07-25T06:46:06.481Z
+- **原文**：[打开小红书笔记](https://www.xiaohongshu.com/explore/6a09a61b0000000006031629)
+- **互动**：848 / 1414 / 59
+
+</Callout>
+
+## 正文
+
+做了一个 AI Agent 学习路线的github仓库：Agent Learning Hub。
+核心是整理一条能照着做的 todo list：从最小 Agent Loop、工具调用、RAG、Memory，到 Claude Code / OpenClaw / Hermes 这类现代 Agent Harness，再到 Skills、MCP、A2A、评测、trace 和安全。
+也收录了 learn-claude-code、claw0、hello-agents、OpenClaw、Hermes、DeerFlow、smolagents 等值得读源码/跟做的项目。
+适合想系统学习 AI Agent、做真实项目的学习者。
+\#转码 #计算机实习 #找工作 #agent #大模型 #开源 #互联网大厂 #技术干货 @职场薯
+
+\#转码 #计算机实习 #找工作 #agent #大模型 #开源 #互联网大厂 #技术干货 #@职场薯 #作者
+
+## OCR 长图正文
+
+<Callout variant="info">
+
+引擎：tesseract chi_sim+eng · 约 12777 字 · 19 图
+识别可能有错字，以图片为准。
+
+</Callout>
+
+### 图 p01.webp
+
+人                Pa tO eee COGN SGENts arr ere HME CORE f SOCEKe
+langchain-ai/langgraph               状态图和可控 agent 编排。
+openai/openai-agents-python        OpenAl Agents SDK Python.
+QwenLM/Qwen-Agent                 Qwen 4% agent 框架。
+browser-use/browser-use             浏览器 agent 实战。
+bytedance/UI-TARS-desktop         多模态桌面 agent stack，适合研究视觉 UI 操作。
+SWE-agent/SWE-agent               软件工程agent
+All-Hands-Al/OpenHands             开源 coding agent.
+ee                 系统化入门课程
+4                                              基于 OpenAl 原生 API 的生产级多智能体框架，覆盖 ToolResponse、上下文
+JaoaefHeloagems                     工程、会话持久化、子代理、TraceLogger So
+Thoughtful Blogs
+Blog                                               Why It Is Useful
+Lilian Weng: LLM Powered Autonomous Agents ， 经典长文，系统整理 agent 架构、记忆、规划和工具使用。
+Simon Willison: Al/LLM writing                    非常务实的 LLM 工程观察，适合补工程直觉。
+LangChain Blog                            LangGraph, LangSmith, agent 工程实践。
+Google Developers Blog: ADK                           Google ADK 官方发布文章。
+Claude Code Study Path
+Claude Code 是当前最值得拆解的 coding agent 产品之一。推荐按`官方文档 -> 复刻项目 -> 架构解析 -> 工程对照"的
+EFS:
+© READS, HEAP hooks, subagents, MCP, GitHub Actions, permissionso
+。 读公开分析论文，抽象出 agent harness 的设计空间。
+。 跟随leam -claude-code 从夫复刻核心机制。
+。 对照 hello-agents、OpenClaw、Hermes Agent 这些开源项目，学习工程化实现。
+Resource                                                      Focus
+Claude Code Common Workflows ， 官方工作流教程，适合学日常使用和项目协作。
+Claude Code Overview                官方入口，理解产品能力和命令行工作方式。
+learn-claude-code                     从夫复刻 Claude Code-like agent, HAS harness 最小实现。
+Claude Code 源码解析                中文架构解读，适合按模块理解实现思路。
+Claude Code 源码分析地图           用地图方式拆解 agent loop、工具、命令和多代理协作。
+Dive into Claude Code                 从研究视角总结 Claude Code 的设计空间和 agent harness 模式。
+Agentic Education                     用 Claude Code 学 Claude Code 的交互式课程思路。
+
+### 图 p02.webp
+
+Agent学习
+路线总续
+
+### 图 p03.webp
+
+Agent Learning Hub
+A curated Al Agent learning roadmap for people who want to build useful, reliable agents instead of collecting random
+links.
+这个仓库只维护一个核心展示面: README。目标是把社区里优秀分享、官方博客、论文、开源项目和真实工程经验,
+整理成一份可以照着执行的 Al Agent 学习 todo list。
+How To Use
+。 如果你是新手: 按 TLeaming Todo List 从上到下做，每完成一项就打勾。
+。 如果你已经会 LLM 应用: 从 Stage 2 或 Stage 3 开始，重点补 Agent loop、工具调用、评测和工程化。
+。 如果你想做项目: BB 'Project Ladderj，每一档做一个可运行作品。
+。 如果你只想找资料: 看 fCurated Resources1，优先读官方文档和经典论文。
+What To Learn Now
+Agent 领域变化很快。当前更值得投入的不是老式“角色扮演多 agent 框架"，而是这些更贴近真实生产力的方向:
+priority            Learn                               Why
+7      Claude Code / Codex-style      真实代码库、shell、文件编辑、测试、权限、上下文压缩，是最好
+coding agents                          的 agent 工程样本。
+Z      Re ee eee       agent 的能力很大一部分来自 harness: 工具协议、权限、状态、
+#         a i      反馈、回放、CI、评测。
+OpenClaw / Hermes-style       长运行、本地优先、跨应用、记忆、skills、消息入口，更像"个人
+3                               =
+personal agents                            操作系统"。
+skills 负责能力复用，MCP 连接工具，A2A 连接 agent, ACP 连接
+4         Skills / MCP / A2A / ACP            eae el
+5          Evaluation and safety                没有 eval、trace、权限边界的 agent 只能算 demo.
+不建议把精力重押在已经泛化成模板的老式 crew/role-play 框架上。它们可以了解，但不应成为主线。
+
+### 图 p04.webp
+
+2 Learning Todo List
+Stage 0: Understand What An Agent Is
+区分 chatbot. workflow, agent, multi-agent.
+EERE agent 的基本循环: observe -> think -> act -> observe.
+明白什么时候不该用 agent: 任务可预测、流程稳定、普通脚本能解决时，agent 反而增加不确定性。
+读完 Anthropic Building effective agents。
+读完 OpenAl: A practical guide to building agents.
+产出: 写一页短笔记，回答 [我的场景为什么需要 agent，而不是普通 workflow? 1
+Stage 1: Build A Minimal Agent Loop
+会用一个 LLM API 完成普通对话。
+会让模型输出结构化 JSON。
+会定义一个工具函数，例如 search、calculator、read file。
+会解析模型的 tool call / function call.
+会执行工具，并把工具结果喂回模型。
+会给 agent loop 加最大步数、超时和错误处理。
+。 OpenAl Function Calling
+。 Gemini API Function Calling
+。 Claude Tool Use
+Pa: — 50-150 行的最小 agent，可以选择工具、执行工具、返回最终答案。
+Stage 2: Learn Tool Use, RAG, And Memory
+会做检索增强生成: chunk, embed, retrieve. answer with citations.
+会把搜索、数据库、文件、浏览器、代码执行接成工具。
+会区分短期上下文、会话记忆、长期记忆。
+会处理工具失败、空结果、重复调用、幻觉引用。
+会让 agent 在回答里给出来源或证据。
+。 Llamalndex Agents
+。 LangChain Docs
+。 Gemini API Code Execution
+* Model Context Protocol
+产出: 一个资料研究助手，输入主题后自动搜索、筛选、总结并输出引用链接。
+
+### 图 p05.webp
+
+Stage 3: Study One Modern Agent Harness
+先选一个现代 agent 系统学深。这里的重点不是"框架 AP| 怎么调"，而是它如何组织工具、上下文、权限、状态、日
+志、子任务和反馈。
+System                 Best For                                     Learn This f You Want To
+Claude Code      _               学真实 coding agent 的 CHI、工具、权限、hooks、subagents、
+让         Coding agent product icp.
+(armel |'\From-scratch agent          从0到1复刻 Claude Code-like harness.
+code         harness
+四       From-scratch OpenClaw 。 从 agent loop 一路构建 session、channel、gateway、memory、
+二        gateway            heartbeat、delivery、resilience、concurrency。
+hello-agents    Chinese agent tutorial    从零开始构建智能体，适合系统补 Agent 原理与实践。
+OpenClaw     el     学本地长运行 agent、skills、消息入口、系统工具和安全边界。
+agen
+Hermes Agent SSF hosted growing 学长期记忆、skils、toolsets、多平台消息网关和迁移能力。
+agen
+Tr      it    it          -
+CyberClaw      icy bon      学全行为审计、两段式安全调用、双水位记忆和心跳任务。
+architecture
+Stateful graph        —         a
+gGrap                           SEL            编排。
+LangGraph     aa         学状态图、可恢复执行和可控编排
+读懂一个 agent harness 的目录结构
+找出它的 agent loop, tool registry, permission gate, session store, context compaction.
+跑通它的最小示例，并加一个你自己的工具。
+观察一次完整 trace，解释每一步为什么发生。
+把同一个任务分别用 TAB agent loops 和 Thamness) 实现，对比差异。
+产出: 一个可调试的 agent harness demo，包含 README、运行步骤、示例输入输出和失败记录。
+Stage 4: Multi-Agent Is Coordination, Not Magic
+\#888 planner / executor / reviewer / critic / router 等常见角色。
+学会用 supervisor af graph 管理多 agent, MAIL agent 随便聊天。
+会定义每个 agent 的职责边界、输入输出 shema、停止条件。
+会处理循环、争论、任务漂移、上下文膨胀。
+会判断什么时候单 agent 更好。
+。 Claude Code Subagents
+
+### 图 p06.webp
+
+产出: 一个小型多 agent 系统，例如 research -> write -> review -> reviseo
+Stage 5: Learn Skills, Protocols, And Capability Packaging
+现代 agent 的能力不只来自模型和工具，也来自可复用的 skills。一个好的 skill 像一份小型操作手册: 告诉 agent 什么
+时候使用、怎么使用、需要哪些脚本/资源、如何验证结果。
+理解 Skill 和 Tool 的区别: tool 是可调用接口，skill 是可复用流程知识。
+理解 Skill 和 Prompt 的区别: prompt 通常是一次性指令，skill 是可发现、可版本化、可分发的能力包。
+理解 Skill 和 MCP 的区别: MCP 接入外部工具/数据源，skill 告诉 agent 如何完成一类任务。
+阅读 Claude Code Skills 的文件结构和触发机制。
+阅读 OpenClaw Skills 的加载、作用域和安全边界。
+写一个最小 SKILL.md ，包含 name、description、何时使用、步又、验收标准。
+给 skill 加一个脚本或模板文件，并说明 agent 什么时候才需要加载它。
+给 skill 5— smoke test，验证它是否真的提升任务成功率。
+。 Claude Code Skills
+。 Claude Agent Skills
+。 Claude Code Agent SDK Skills
+© OpenClaw Skills
+。 Model Context Protocol
+。 Agent2Agent Protocol
+。 Agent Client Protocol
+产出: 一个可复用 skill, fi code-review, research-report, migration-helper, pdf-extraction 或 release-note-
+writero
+Stage 6: Browser And Computer-Use Agents
+理解 browser agent 和普通 APl tool 的区别。
+会用 Playwright 或 browser-use 做网页观察和点击。
+会给浏览器操作加安全限制: 不登录敏感账号、不越权、不绕过平台规则。
+会处理页面变化、弹窗、加载失败、元素定位失败。
+会记录截图、DOM、动作日志，方便复盘。
+。 Claude Computer Use
+。 browser-use
+。 WebArena
+。 VisualWebArena
+产出: 一个只操作公开网页的 browser agent，例如打开网页、提取信息、生成摘要。
+
+### 图 p07.webp
+
+Stage 7: Evaluation, Observability And Safety
+为 agent 准备固定测试集，而不是只看 demo。
+记录成功率、失败原因、工具调用次数、成本、延迟。
+会看 trace，知道失败发生在 prompt、工具、检索、模型还是状态管理。
+给危险工具加和人工确认，例如发邮件、删文件、付款、发布内容。
+了解 promptinjection、data exfiltration、tool abuse 等风险。
+会用回归测试防止 prompt 或工具改动后能力退化。
+© OpenAl Evals
+。 OpenAl Agent platform
+。LangSsmith
+。 AgentBench
+。 SWE-bench
+产出: 一个 agent eval 表格，至少包含 20 个任务、期望结果、实际结果、失败分类。
+Stage 8: Ship A Real Agent
+有明确用户、明确任务、明确成功标准。
+有日志、trace、错误重试、超时、成本上限。
+有权限边界和人工确认机制。
+有部署方式: CL. Web app, Slack bot, GitHub Action 或后台任务。
+有 README: 怎么运行、怎么配置 key、怎么扩展工具、有哪些限制。
+产出: 一个别人能 clone 下来跑的 agent 项目。
+
+### 图 p08.webp
+
+az         Web Research Agent               搜索、筛选、引用、总结
+3         PDF QA Agent                      RAG, chunk, retrieval, citation
+4        Coding Review Agent            读取 diff、风险排序、测试建议
+5         Browser Agent                     页面观察、点击、提取、失败恢复
+6         Claude Code-like Nano Agent 。 shell、文件编辑、权限、session、compact
+7         OpenClaw-like Gateway           channel, routing, session, memory, heartbeat, delivery
+8         Reusable Skill Pack                 SKILLmd、脚本、模板、触发条件、smoke test
+9         Multi-Agent Writer                planner, writer, reviewer 协作
+10      Personal Agent               OpenClaw/Hermes-style 记忆、skills、消息入口
+11        Production Harness                evals、trace、权限、CI、runner、回放
+Curated Resources
+Official Guides And Blogs
+Resource                                                            Why It Matters
+Anthropic: Building effective agents                Agent 设计入门必读，讲清 workflow 和 agent 的边界。
+Claude Code Overview                             当前最值得研究的 coding agent 产品文档入口。
+Claude Code Subagents                    学任务拆分、上下文隔离、专用子代理。
+Claude Code Hooks                              学如何拦截、校验和扩展 agent TA.
+Claude Code GitHub Actions coding agent 如何进入 PR / issue 工作流。
+Claude Code Advanced Patterns                  Anthropic BAM#}, #35 subagents, MCP 和真实代码库扩展。
+OpenAl: A practical guide to building agents ， 面向产品和工程团队的 agent 落地指南。
+OpenAl New tools for building agents          Responses API, Agents SDK、工具和 tracing 的官方介绍。
+OpenAl Agents SDK                               OpenAl 原生 agent 开发入口。
+Claude Tool Use                                       Claude 工具调用机制。
+Claude Computer Use                               电脑操作类 agent 的官方参考。
+Gemini Function Calling                           Gemini 工具调用官方文档。
+Gemini Code Execution                            Gemini 代码执行工具。
+Google Agent Development Kit                  Google 的 agent 开发框架。
+Model Context Protocol                           Agent 连接工具和数据源的重要协议。
+
+### 图 p09.webp
+
+Project Map
+项目不要按 star 数乱读，建议按学习目的分层:
+Layer                                      Study These                                                           Learn
+RE
+Rat clause core can ne 9agens compaction, gateway, trace, subagents.
+Personal /Always- cs ames Agent CyberClaw 长运行、sklls、记忆、消息入口、权限、安全
+On Agents         |
+AR      Claude Code, OpenAl Codex,        真实代码库编辑、shell、测试、sandbox、PR
+gg      OpenCode, OpenHands, SWE-agent 。 ， 工作流。
+ee Deeitiow, Uamalndex             搜索、抓取、检索、rerank、引用、报告生成。
+RAG Agents           0
+Tutorial           Rn          横向看 ReAct、plan-and-Execute、Mult-
+smolagents, agents-towards-
+Encyclopedias       ————        Agent, production patterns.
+production
+浏览    SE MER. a   ial,
+Browser /          re         浏览器/课面操作、视觉理解、动作空间、失败
+Multimodal Agents. ~o™seruse, SieeestoP        恢复。
+Skills, Protocols, And Tooling
+Concept                   Learn From                                           What It Solves
+一类任务的流程知识           ou
+Skills     Claude Code Skills, OpenClaw Skills | #2 SSEESHURERAIIR, Bis. BUaRATSO Reha eT ERTS
+BEI
+MCP.      Model Context Protocol         让 agent 标准化连接外部工具、数据源和服务。
+A2A         Agent2Agent Protocol              让不同 agent 之间发现、通信和协作。
+让编辑器、终端、IDE、宿主应       tt 之间形成统一
+ACP     Agent Client Protocol         ee  ion    本
+Skill         SWE-Skills-Bench, Agent Skills       评估 skills 是否真的提升成功率，而不是制造新的 prompt BR
+Quality     analysis                    声。
+
+### 图 p10.webp
+
+Modern Agent Systems
+System                                                     Why It Is Useful
+Claude Code coding agent 的产品化形态: shell, SCF. ABR. hooks, subagents, MCPo
+ee         M15 Claude Code-like nano agent, i& GEER harness engineeringo
+—            M315 OpenClaw-like agent gateway, #% channel, routing, session, memory,
+——                 delivery, concurrencyo
+hello-agents           中文智能体系统教程，适合从零开始补齐 Agent 原理与实践。
+OpenClaw             本地优先的个人 agent，适合研究长运行 agent 和系统级工具调用。
+Hermes Agent        自托管、长期记忆、skills、消息网关和 toolsets。
+CyberClaw         透明可控 agent 架构，适合研究审计、两段式执行和安全边界。
+Seen         字节开源 long-horizon SuperAgent harness，适合研究 Deep Research, HR. slides, PIT.
+ie iia             图像和视频生成。
+smolagents           Hugging Face 轻量 agent 框架，CodeAgent 思路值得研究。
+LangGraph            状态图和可控 agent 编排，仍然值得作为工程基础学习。
+Qwen-Agent         国产模型生态里的工具调用、RAG、MCP agent 框架。
+Pydantic Al           类型安全和结构化输出，适合生产 Python agent.
+
+### 图 p11.webp
+
+Papers
+Paper                                                            Topic
+ReAct                             Reasoning + acting 的基础范式。
+Toolformer                            模型学习何时调用工具。
+Reflexion                              语言反馈和自我改进。
+Generative Agents                记忆、反思、规划驱动的模拟 agent。
+Voyager                                     开放世界中的长期学习 agent.
+AutoGen                               多 agent 对话框架。
+AgentBench                           Agent 能力评测。
+WebArena                             真实网页环境下的 agent benchmark.
+SWE-bench                            WAS GitHub issue 修复评测。
+SWE-agent                              软件工程 agent 的 agent-computer interface.
+Dive into Claude Code               从系统设计角度分析 Claude Code 这类 coding agent 的 harness, #08, E48
+nn)            和扩展机制。
+Al Harness Engineering              把 harness 作为 agent 能力来源来研究。
+和ng AaenticAl Coding 34 Claude Code, Codex, Gemini、Cursor等 coding tools 的配置机制分析。
+Your Agent Their Asset                  OpenClaw 等本地 agent 的真实安全风险分析。
+
+### 图 p13.png
+
+六
+从
+
+### 图 p17.png
+
+AN
+~ ey
+
+### 图 p19.png
+
+S
+
+### 图 p20.png
+
+(ea
+
+## 图片
+
+<Image src="/static/xhs/xhs-6a09a61b/p01.webp" alt="p01.webp" width={881} height={1204} />
+<Image src="/static/xhs/xhs-6a09a61b/p02.webp" alt="p02.webp" width={1080} height={1440} />
+<Image src="/static/xhs/xhs-6a09a61b/p03.webp" alt="p03.webp" width={977} height={966} />
+<Image src="/static/xhs/xhs-6a09a61b/p04.webp" alt="p04.webp" width={962} height={1207} />
+<Image src="/static/xhs/xhs-6a09a61b/p05.webp" alt="p05.webp" width={973} height={1219} />
+<Image src="/static/xhs/xhs-6a09a61b/p06.webp" alt="p06.webp" width={954} height={1214} />
+<Image src="/static/xhs/xhs-6a09a61b/p07.webp" alt="p07.webp" width={758} height={778} />
+<Image src="/static/xhs/xhs-6a09a61b/p08.webp" alt="p08.webp" width={956} height={1207} />
+<Image src="/static/xhs/xhs-6a09a61b/p09.webp" alt="p09.webp" width={955} height={995} />
+<Image src="/static/xhs/xhs-6a09a61b/p10.webp" alt="p10.webp" width={1032} height={798} />
+<Image src="/static/xhs/xhs-6a09a61b/p11.webp" alt="p11.webp" width={940} height={757} />
+<Image src="/static/xhs/xhs-6a09a61b/p13.png" alt="p13.png" width={200} height={200} />
+<Image src="/static/xhs/xhs-6a09a61b/p14.png" alt="p14.png" width={200} height={200} />
+<Image src="/static/xhs/xhs-6a09a61b/p15.png" alt="p15.png" width={200} height={200} />
+<Image src="/static/xhs/xhs-6a09a61b/p16.png" alt="p16.png" width={200} height={200} />
+<Image src="/static/xhs/xhs-6a09a61b/p17.png" alt="p17.png" width={200} height={200} />
+<Image src="/static/xhs/xhs-6a09a61b/p18.png" alt="p18.png" width={200} height={200} />
+<Image src="/static/xhs/xhs-6a09a61b/p19.png" alt="p19.png" width={209} height={209} />
+<Image src="/static/xhs/xhs-6a09a61b/p20.png" alt="p20.png" width={200} height={200} />
+
+## 评论摘录
+
+- **香菜**：大佬我问一下，如果要应聘当agent实习生现在还需要古法编程吗？我现在很困惑还是让ai讲解自己清楚原理就行
+- **香菜**：大佬我问一下，如果要应聘当agent实习生现在还需要古法编程吗？我现在很困惑还是让ai讲解自己清楚原理就行
+- **Sizhou说
+作者**：肯定是原理为主，现在应该很少有人用古法编程了
+- **Tassels**：明天就去star
+- **Tassels**：明天就去star
+- **Sizhou说
+作者**：感动了多提提意见哇
+- **fantasy**：感谢大佬分享 想问一下后续这个项目会持续更新嘛
+- **fantasy**：感谢大佬分享 想问一下后续这个项目会持续更新嘛
+- **Sizhou说
+作者**：会的，有新的东西出现会维护进去，但频率肯定不高哈在做新项目了
+- **cuda c**：star
+- **cuda c**：star
+- **Sizhou说
+作者**：thanks～
+- **燕石博物志**：感谢大佬
+- **燕石博物志**：感谢大佬
+- **Sizhou说
+作者**：自己也要学习整理，顺手的事，能有帮助就好
+
+## 我的批注
+
+- [ ] 是否对标上海实习主线（Agent 应用/全栈）
+- [ ] 可迁移到简历/项目的点：
+- [ ] 待补学：

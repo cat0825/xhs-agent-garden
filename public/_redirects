@@ -1,0 +1,3 @@
+# Cloudflare Pages redirects.
+# Keep trailingSlash: true behavior from Next config.
+# SPA-style fallback is intentionally NOT used: all routes are pre-rendered.
