@@ -76,9 +76,6 @@ yarn-error.log
 # Yarn Integrity file
 .yarn-integrity
 
-cypress/screenshots
-cypress/videos
-
 certificates/
 
 # Twitter video downloads (uploaded to CDN manually)

@@ -382,10 +382,6 @@ export const Scene = () => {
     );
   }, []);
 
-  if (typeof window !== 'undefined' && window.Cypress) {
-    return null;
-  }
-
   return (
     <Box
       css={{
