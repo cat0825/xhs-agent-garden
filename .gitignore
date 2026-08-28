@@ -57,6 +57,7 @@ typings/
 
 # NextJS
 .next
+tsconfig.tsbuildinfo
 
 # Static export (Cloudflare Pages)
 out/
