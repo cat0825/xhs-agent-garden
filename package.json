@@ -73,7 +73,7 @@
     "three": "^0.182.0",
     "unist-util-find-after": "5.0.0",
     "unist-util-visit": "5.0.0 ",
-    "uuid": "^13.0.0"
+    "uuid": "^14.0.2"
   },
   "devDependencies": {
     "@next/bundle-analyzer": "16.0.10",
