@@ -50,6 +50,40 @@ def run_oc(args: list[str]) -> tuple[int, str, str]:
         return 75, "", f"timeout after {CMD_TIMEOUT}s"
 
 
+def bridge_up() -> bool:
+    """桥是否连通。唯一可信判据是 daemon status 的 Extension 行 —— doctor 恒 exit 0。"""
+    try:
+        r = subprocess.run(["opencli", "daemon", "status"],
+                           capture_output=True, text=True, timeout=30)
+    except (subprocess.TimeoutExpired, FileNotFoundError):
+        return False
+    for line in (r.stdout + r.stderr).splitlines():
+        if line.strip().startswith("Extension:"):
+            return "connected" in line
+    return False
+
+
+def wait_bridge(max_wait: int = 180) -> bool:
+    """等桥回来。
+
+    Chrome MV3 的 service worker 会在连续调用后被回收，表现为跑 3-4 条查询
+    必掉线（2026-08-29 三次稳定复现）。掉线后敲命令不会自动唤醒，但扩展常在
+    几十秒内自行重连，所以这里轮询等待而不是直接放弃整批。
+    """
+    if bridge_up():
+        return True
+    log(f"[bridge] 掉线，等待重连（最多 {max_wait}s）...")
+    waited = 0
+    while waited < max_wait:
+        time.sleep(15)
+        waited += 15
+        if bridge_up():
+            log(f"[bridge] {waited}s 后已恢复")
+            return True
+    log(f"[bridge] {max_wait}s 内未恢复，放弃剩余查询")
+    return False
+
+
 def parse_likes(v) -> int:
     """小红书 likes 可能是 '470' / '1.2万' / int。"""
     if isinstance(v, (int, float)):
@@ -150,10 +184,16 @@ def collect_xhs(cfg: dict, meta: dict, limit: int | None, dry: bool,
 
         log(f"[xhs] {qi}/{len(sec['queries'])} search {q!r} ...")
         code, so, se = run_oc(["xiaohongshu", "search", q, "--limit", lim, "-f", "json"])
+        if code == 69 and wait_bridge():
+            log(f"[xhs] {qi} 重试 ...")
+            code, so, se = run_oc(["xiaohongshu", "search", q, "--limit", lim, "-f", "json"])
         if code != 0:
             log(f"[xhs] FAIL exit={code}: {se.strip()[-200:]}")
             out.append({"_error": True, "source": "xiaohongshu", "query": q, "exit": code,
                         "stderr": se.strip()[-500:]})
+            if code == 69:
+                log("[xhs] 桥不可用，跳过剩余小红书查询")
+                break
             continue
 
         try:
@@ -239,10 +279,16 @@ def collect_x(cfg: dict, meta: dict, limit: int | None, dry: bool,
             if tbe and tbe != "0":
                 args += ["--top-by-engagement", tbe]
             code, so, se = run_oc(args)
+            if code == 69 and wait_bridge():
+                log(f"[x] {qi} 重试 ...")
+                code, so, se = run_oc(args)
             if code != 0:
                 log(f"[x] FAIL exit={code}: {se.strip()[-200:]}")
                 out.append({"_error": True, "source": "x", "query": q, "product": product,
                             "exit": code, "stderr": se.strip()[-500:]})
+                if code == 69:
+                    log("[x] 桥不可用，跳过剩余 X 查询")
+                    return out
                 continue
 
             try:
@@ -310,6 +356,16 @@ def main() -> int:
 
     if not args.dry_run and not OCSAFE.is_file():
         log(f"找不到 {OCSAFE}，无法采集")
+        return 1
+
+    # 开跑前先探桥：桥不通时整批必然失败，先说清怎么修，别白跑 6 分钟
+    if not args.dry_run and not wait_bridge(max_wait=60):
+        log("")
+        log("桥不通，采集无法进行。修复步骤：")
+        log("  1. 打开 Chrome → chrome://extensions")
+        log("  2. 确认 OpenCLI 扩展（ID mlllpdagodljcogmlhcehgekbcaooeno）已启用")
+        log("  3. 点它的「重新加载」按钮唤醒 service worker")
+        log("  4. opencli daemon status 应显示 Extension: connected")
         return 1
 
     raw_dir = Path(meta.get("raw_dir", "radar/raw"))

@@ -36,17 +36,42 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("path", nargs="?")
     ap.add_argument("--min-likes", type=int, default=0)
+    ap.add_argument("--all", action="store_true",
+                    help="合并 radar/raw 下所有轮次（按 id 去重），而不是只看最新一份")
     ap.add_argument("-o", "--out", help="写入文件（默认 stdout）")
     args = ap.parse_args()
 
-    src = Path(args.path) if args.path else latest_raw()
-    if not src or not src.is_file():
-        print("找不到采集产物，先跑 python3 radar/collect.py", file=sys.stderr)
-        return 1
+    if args.all:
+        files = sorted(RAW_DIR.glob("candidates-*.json")) if RAW_DIR.is_dir() else []
+        if not files:
+            print("radar/raw 下没有采集产物", file=sys.stderr)
+            return 1
+        src = files[-1]
+        merged: dict[str, dict] = {}
+        errors: list[dict] = []
+        stamps: list[str] = []
+        for f in files:
+            d = json.loads(f.read_text(encoding="utf-8"))
+            stamps.append(d.get("collected_at", f.stem))
+            errors += d.get("errors", [])
+            for i in d.get("items", []):
+                key = str(i.get("note_id") or i.get("tweet_id") or id(i))
+                merged.setdefault(key, i)
+        data = {
+            "collected_at": f"{stamps[0]} … {stamps[-1]}（{len(files)} 轮合并）",
+            "lookback_days": None,
+            "items": list(merged.values()),
+            "errors": errors,
+        }
+    else:
+        src = Path(args.path) if args.path else latest_raw()
+        if not src or not src.is_file():
+            print("找不到采集产物，先跑 python3 radar/collect.py", file=sys.stderr)
+            return 1
+        data = json.loads(src.read_text(encoding="utf-8"))
+        errors = data.get("errors", [])
 
-    data = json.loads(src.read_text(encoding="utf-8"))
     items = [i for i in data.get("items", []) if i.get("likes", 0) >= args.min_likes]
-    errors = data.get("errors", [])
 
     xhs = [i for i in items if i["source"] == "xiaohongshu"]
     xs = [i for i in items if i["source"] == "x"]

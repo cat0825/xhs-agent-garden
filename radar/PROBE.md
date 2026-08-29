@@ -89,3 +89,39 @@ has_media, media_urls, media_posters, card, quoted_tweet
 - 全量 15 条查询：约 6 分钟
 
 定时任务留足 15 分钟余量。
+
+## 桥掉线规律（2026-08-29 三次稳定复现）
+
+**跑 3-4 条查询后必掉**，之后所有命令 `exit 69`，且敲命令不会自动唤醒：
+
+```
+[xhs] 1/7 ... 保留 1      ← 成功
+[xhs] 2/7 ... 保留 0      ← 成功
+[xhs] 3/7 FAIL exit=1: stale page identity
+[xhs] 4/7 FAIL exit=69   ← 之后全挂
+```
+
+排查掉的几个方向（都不是原因）：
+
+- **扩展版本错配**：两处 manifest 都是 1.0.23，一致
+- **扩展被禁用**：`disable_reasons: []`，没被禁。
+  注意 `Secure Preferences` 里 `state` 字段可能缺失（值 `None`），
+  用 `v.get('state')==1` 判断会误报成「已禁用」
+- **headless Chrome 抢占 profile**：那些 puppeteer 实例用的是独立临时目录
+  （`puppeteer_dev_chrome_profile-*`），不碰默认 profile
+- **`opencli daemon restart`**：重启 daemon 无效，扩展侧不会自动重连
+
+结论是 **Chrome MV3 service worker 被回收**，只能从 Chrome UI 唤醒：
+`chrome://extensions` → OpenCLI 扩展 → 点「重新加载」。
+命令行代不了（Chrome 安全限制）。
+
+### 采集器的应对
+
+1. **开跑前探桥**（`wait_bridge(60)`）：桥不通直接退出并打印修复步骤，
+   不白跑 6 分钟
+2. **掉线后等待重连**（`wait_bridge(180)` 轮询）：扩展有时几十秒内自行恢复，
+   等一等比放弃整批划算
+3. **确认不可用就快停**：`exit 69` 且等不回来时 `break`，
+   失败次数从 13 次降到 2 次
+
+实测效果：桥彻底掉线时，失败 2 次即退出，不再刷屏。
