@@ -37,7 +37,7 @@
   "dependencies": {
     "@base-ui/react": "^1.0.0",
     "@maximeheckel/design-system": "4.2.3",
-    "@react-three/drei": "^10.7.7",
+    "@react-three/drei": "^10.7.8",
     "@react-three/fiber": "^9.4.2",
     "@react-three/postprocessing": "^3.0.4",
     "ai": "^5.0.113",
