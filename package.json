@@ -57,7 +57,7 @@
     "motion": "^12.23.26",
     "next": "^15.5.18",
     "next-mdx-remote": "6.0.0",
-    "next-seo": "6.6.0",
+    "next-seo": "7.3.0",
     "postprocessing": "^6.38.1",
     "prism-react-renderer": "^2.4.1",
     "prismjs": "^1.30.0",
