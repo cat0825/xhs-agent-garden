@@ -1,0 +1,151 @@
+# 雷达信息源配置
+#
+# 采集流程：本文件 → xhs-radar collect → 原始 JSON 落盘 → 人工/AI 筛选 → 生成笔记
+# 全程只读，不发帖不点赞不关注。
+#
+# 定位分工（基于 2026-08-29 实测，见 radar/PROBE.md）：
+#   xiaohongshu = 核心源，出面经/JD/学习路线，中文求职内容密度高
+#   x           = 辅助源，出技术风向和框架动态，求职交集稀薄且 crypto 噪音重
+#
+# 调优提示：
+#   - min_likes 是硬门槛，低于此值直接丢弃，用来挡长尾水贴
+#   - X 必须写 exclude_words，否则「AI agent + job」会被 crypto agent 经济营销帖灌满
+#   - 改完用 `xhs-radar collect --dry-run` 看查询展开，别直接上定时
+
+[meta]
+# 增量窗口：只保留这个天数内发布的内容，避免反复采到老帖
+lookback_days = 14
+# 每个 query 最多取几条（opencli --limit）
+default_limit = 20
+# 落盘根目录
+raw_dir = "radar/raw"
+
+# ─────────────────────────────────────────────
+# 小红书：核心源
+# ─────────────────────────────────────────────
+[xiaohongshu]
+enabled = true
+# 命中任一即保留（标题匹配）；留空表示不做关键词过滤
+require_any = [
+  "面经",
+  "面试",
+  "一面",
+  "二面",
+  "三面",
+  "实习",
+  "招聘",
+  "JD",
+  "岗位",
+  "学习路线",
+  "路线图",
+  "怎么学",
+  "入门",
+  "转行",
+  "简历",
+  "offer",
+  "Agent",
+  "智能体",
+]
+# 命中任一即丢弃：广告 / 培训机构拉客 / 付费社群
+exclude_words = [
+  "付费",
+  "报名",
+  "私信领取",
+  "扫码",
+  "课程优惠",
+  "包就业",
+  "内推费",
+  "代写",
+  "包过",
+  "训练营招生",
+]
+min_likes = 10
+
+[[xiaohongshu.queries]]
+label = "面经"
+q = "AI Agent 面经"
+
+[[xiaohongshu.queries]]
+label = "面经"
+q = "大模型 Agent 面试"
+
+[[xiaohongshu.queries]]
+label = "面经"
+q = "LLM 应用开发 面经"
+
+[[xiaohongshu.queries]]
+label = "岗位要求"
+q = "AI Agent 实习 招聘"
+
+[[xiaohongshu.queries]]
+label = "岗位要求"
+q = "Agent 开发 岗位 JD"
+
+[[xiaohongshu.queries]]
+label = "学习路线"
+q = "AI Agent 学习路线"
+
+[[xiaohongshu.queries]]
+label = "学习路线"
+q = "Agent 开发 怎么入门"
+
+# ─────────────────────────────────────────────
+# X / Twitter：辅助源
+# ─────────────────────────────────────────────
+[x]
+enabled = true
+# X 侧靠查询里的 -word 做初筛，这里再兜一层（匹配正文 + bio + 作者名）
+# 实测挡掉的三类噪音（2026-08-29，见 radar/PROBE.md）：
+#   1. crypto agent 经济营销帖：作者名常带 Crypto，正文谈 token/onchain 经济
+#   2. 收益带货帖：「make $47,300 in a month」这类 AI 赚钱话术
+#   3. 宏观财经推演：AI 半导体 / Capex / ARR 泡沫分析，与求职无关
+exclude_words = [
+  "airdrop",
+  "presale",
+  "memecoin",
+  "$SOL",
+  "$ETH",
+  "pump",
+  "whitelist",
+  "NFT",
+  "tokenomics",
+  "degen",
+  "moonshot",
+  "crypto",
+  "onchain",
+  "on-chain",
+  "web3",
+  "blockchain",
+  "半导体",
+  "Capex",
+  "ARR",
+  "泡沫",
+  "终局推演",
+  "/month",
+  "per month",
+  "in a month",
+  "passive income",
+  "side hustle",
+]
+# 作者名命中即丢弃（不区分大小写）
+exclude_authors = ["crypto", "coin", "token", "nft", "defi", "trader", "degen"]
+min_likes = 5
+# live=最新，top=高相关；两路都跑能兼顾时效与高热历史帖
+products = ["live", "top"]
+top_by_engagement = 10
+
+[[x.queries]]
+label = "技术风向"
+q = '("agent harness" OR "context engineering" OR "tool calling") -crypto -token -airdrop -filter:replies'
+
+[[x.queries]]
+label = "技术风向"
+q = '("building agents" OR "multi-agent" OR "agent framework") (production OR lessons OR postmortem) -crypto -token -filter:replies'
+
+[[x.queries]]
+label = "招聘信号"
+q = '("hiring" OR "we are hiring") ("AI agent" OR "agent engineer" OR "applied AI") -crypto -token -airdrop -filter:replies'
+
+[[x.queries]]
+label = "中文风向"
+q = '(Agent OR 智能体) (面试 OR 面经 OR 招聘 OR 岗位) lang:zh -filter:replies'

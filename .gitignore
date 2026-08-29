@@ -84,3 +84,10 @@ twitter_video_out/
 # Generated at build time (scripts/generate-rss, generate-sitemap)
 public/rss.xml
 public/sitemap.xml
+
+# 雷达采集产物：运行时数据，会持续增长，且 url 里的 xsec_token 是时效凭据
+radar/raw/
+
+# Python 字节码
+__pycache__/
+*.pyc
