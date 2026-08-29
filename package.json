@@ -46,7 +46,7 @@
     "d3-array": "3.2.4",
     "date-fns": "4.1.0",
     "detect-gpu": "^5.0.63",
-    "globby": "16.0.0",
+    "globby": "16.2.4",
     "glsl-curl-noise2": "^0.0.4",
     "glsl-noise": "^0.0.0",
     "glslify-loader": "^2.0.0",
