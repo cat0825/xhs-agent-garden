@@ -63,25 +63,21 @@ def bridge_up() -> bool:
     return False
 
 
-def wait_bridge(max_wait: int = 180) -> bool:
-    """等桥回来。
+RELOAD_HINT = (
+    "桥已断，且不会自行恢复。修复：Chrome → chrome://extensions → "
+    "OpenCLI 扩展 → 点「重新加载」，然后重跑本命令。"
+)
 
-    Chrome MV3 的 service worker 会在连续调用后被回收，表现为跑 3-4 条查询
-    必掉线（2026-08-29 三次稳定复现）。掉线后敲命令不会自动唤醒，但扩展常在
-    几十秒内自行重连，所以这里轮询等待而不是直接放弃整批。
+
+def wait_bridge(max_wait: int = 0) -> bool:
+    """桥可用则 True，否则 False（不空等）。
+
+    2026-08-31 实测：service worker 被回收后静置 90s 仍 disconnected，
+    `daemon restart` 也无效 —— 只有从 chrome://extensions 手动 reload 才能唤醒。
+    所以这里不做轮询等待（早期版本等 180s 纯属白等），直接返回结果。
+    max_wait 保留仅为兼容调用点签名。
     """
-    if bridge_up():
-        return True
-    log(f"[bridge] 掉线，等待重连（最多 {max_wait}s）...")
-    waited = 0
-    while waited < max_wait:
-        time.sleep(15)
-        waited += 15
-        if bridge_up():
-            log(f"[bridge] {waited}s 后已恢复")
-            return True
-    log(f"[bridge] {max_wait}s 内未恢复，放弃剩余查询")
-    return False
+    return bridge_up()
 
 
 def parse_likes(v) -> int:
@@ -192,7 +188,7 @@ def collect_xhs(cfg: dict, meta: dict, limit: int | None, dry: bool,
             out.append({"_error": True, "source": "xiaohongshu", "query": q, "exit": code,
                         "stderr": se.strip()[-500:]})
             if code == 69:
-                log("[xhs] 桥不可用，跳过剩余小红书查询")
+                log(f"[xhs] 跳过剩余小红书查询 —— {RELOAD_HINT}")
                 break
             continue
 
@@ -287,7 +283,7 @@ def collect_x(cfg: dict, meta: dict, limit: int | None, dry: bool,
                 out.append({"_error": True, "source": "x", "query": q, "product": product,
                             "exit": code, "stderr": se.strip()[-500:]})
                 if code == 69:
-                    log("[x] 桥不可用，跳过剩余 X 查询")
+                    log(f"[x] 跳过剩余 X 查询 —— {RELOAD_HINT}")
                     return out
                 continue
 
@@ -359,7 +355,7 @@ def main() -> int:
         return 1
 
     # 开跑前先探桥：桥不通时整批必然失败，先说清怎么修，别白跑 6 分钟
-    if not args.dry_run and not wait_bridge(max_wait=60):
+    if not args.dry_run and not bridge_up():
         log("")
         log("桥不通，采集无法进行。修复步骤：")
         log("  1. 打开 Chrome → chrome://extensions")
@@ -387,6 +383,14 @@ def main() -> int:
 
     errors = [i for i in items if i.get("_error")]
     good = [i for i in items if not i.get("_error")]
+
+    # 零收获不落盘：空产物只会污染下轮去重索引，且之前每次都得手动删
+    if not good:
+        log("")
+        log(f"本轮零收获（失败 {len(errors)} 次），不落盘")
+        if errors and not bridge_up():
+            log(RELOAD_HINT)
+        return 1
 
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     raw_dir.mkdir(parents=True, exist_ok=True)

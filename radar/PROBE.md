@@ -115,13 +115,44 @@ has_media, media_urls, media_posters, card, quoted_tweet
 `chrome://extensions` → OpenCLI 扩展 → 点「重新加载」。
 命令行代不了（Chrome 安全限制）。
 
+### 静置不会恢复（2026-08-31 实测推翻早前推断）
+
+早前以为「扩展常在几十秒内自行重连」，实测是错的：
+
+```
+掉线后静置  +30s: Extension: disconnected
+            +60s: Extension: disconnected
+            +90s: Extension: disconnected
+```
+
+`opencli daemon restart` 同样无效。**只有 chrome://extensions 点「重新加载」
+才能唤醒 service worker**，命令行代不了（Chrome 安全限制）。
+
+所以早期版本里「掉线后轮询等 180s」纯属白等，已删。
+
+### reload 后能撑多久
+
+2026-08-31 reload 后实测：小红书 **7/7 查询全过、零失败**（每条 15 结果，
+约 2 分钟）；紧接着跑 X 侧第 1 条即掉线。即单次 reload 大约能撐 **7-8 条查询**。
+
+对策是**分源分批跑**，而不是一次 15 条全上：
+
+```bash
+python3 radar/collect.py --only xiaohongshu --limit 15   # 先跑完小红书
+# 桥掉了就 reload 一次
+python3 radar/collect.py --only x --limit 15             # 再跑 X
+```
+
+小红书是核心源，优先跑；X 是辅助源，掉了不影响当轮价值。
+
 ### 采集器的应对
 
 1. **开跑前探桥**（`wait_bridge(60)`）：桥不通直接退出并打印修复步骤，
    不白跑 6 分钟
-2. **掉线后等待重连**（`wait_bridge(180)` 轮询）：扩展有时几十秒内自行恢复，
-   等一等比放弃整批划算
+2. **不空等**：`wait_bridge` 已退化为一次探测（静置无用，见上）
 3. **确认不可用就快停**：`exit 69` 且等不回来时 `break`，
    失败次数从 13 次降到 2 次
 
-实测效果：桥彻底掉线时，失败 2 次即退出，不再刷屏。
+4. **零收获不落盘**：空产物只会污染下轮去重索引，且每次都得手动删
+
+实测效果：桥断时 **3 秒退出**、失败 2 次、不产生空文件。
