@@ -1,0 +1,48 @@
+---
+title: "Agent 面试复盘：LangGraph 底层被问穿（16 题）"
+subtitle: "面经 · 小红书笔记归档"
+slug: "6aa3b16e000000001001d751"
+date: "2026-09-11T10:00:00.000Z"
+updated: "2026-09-11T10:00:00.000Z"
+source: eriri
+categories: [面经]
+keywords: ["AI-Agent", "面经", "LangGraph", "MCP", "State"]
+tags: ["#Agent", "#Agent面试", "#AI", "#面经"]
+---
+
+<Callout variant="info" label="元数据">
+
+- **作者**：Pony～_～
+- **分类**：面经
+- **发布时间**：2026-09-11
+- **原文**：[打开小红书笔记](https://www.xiaohongshu.com/search_result/6aa3b16e000000001001d751)
+- **互动**：♥119 赞
+
+</Callout>
+
+## 背景
+
+面试者找了两周、面了六七家公司（非大厂）。他强调：现在 Agent 面试大多问题都围绕项目落地，挺考验实操经验；被问到没准备到的问题很正常，按真实情况回答就行。
+
+## 原题 16 道
+
+1. 自我介绍（最新项目）
+2. LangGraph 的节点如何传输数据？LangGraph 靠共享 State 数据，是怎么做到的？
+3. 并行边 + 多节点操作一个 state 的结果会汇总到一个节点，state 如何汇总？
+4. 使用 deepagent、langgraph、dify 完成一个问数智能体如何设计方案，三种技术有什么区别？
+5. langchain 管道符是如何实现"上一个管道的输出作为下一个管道输入"的？
+6. 文档不拆分的 embedding 和拆分后的 embedding 结果有什么不一样？
+7. 一个文档做向量化和一个文档的一个块做向量化，产生的结果维度是否一样？
+8. 讲讲 MCP？MCP 的实现方式有哪些？MCP 设计解决了什么场景？
+9. 介绍一下 MCP 的协议，streamable 格式？
+10. 讲一下要用一个 MCP，是如何与大模型结合，并且如何调用？
+11. langgraph 如何自定义中间件，中间件如何绑定到 langgraph？
+12. langgraph 如何挂载 tools，底层如何实现？langgraph 的中间件如何实现的？
+13. 介绍 Python 中的 await，用法？断点打到 await 所在的一行，await 后面的代码会不会执行？
+14. 长上下文压缩，你了解哪些实现思路？
+15. 当工具越来越多，上下文信息杂乱，Agent 选工具容易出错，可以怎么优化？
+16. 之前做过哪些 Agent 落地项目？
+
+## 点评
+
+这是本次调研里**技术深度最高的一份**。LangGraph 问到了 State 传递机制、并行边汇总、中间件绑定、tools 挂载的底层实现，已经超出"会用"的层面。MCP 连问三题：实现方式 / streamable 格式 / 如何与模型结合调用。
