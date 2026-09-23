@@ -123,10 +123,10 @@ tags: ["#面经", "#秋招", "#Agent", "#面试原题"]
 |------|------|
 | `xiaohongshu download` | `Navigation rejected` |
 | `xhs-media`（iPhone UA 抓 HTML） | 抓到「你访问的页面不见了」，0 张图 |
-| curl 原图 URL | 403 |
-| curl 原图 URL + `!nd_dft_wlteh_webp_3` 后缀 + Referer | 200 |
+| curl 原图 URL（剥掉后缀） | 403 |
+| curl 原图 URL（沿用自带后缀）+ Referer | 200 |
 
-浏览器会话打开笔记页后，图片地址在 `window.__INITIAL_STATE__.note.noteDetailMap` 的 `imageList` 里。拿到 URL 要做两处改动才能下载：`http://` 换成 `https://`（否则被混合内容策略拦掉），末尾补上渲染后缀 `!nd_dft_wlteh_webp_3`（否则 403）。下载时还要带 `Referer: https://www.xiaohongshu.com/`。
+浏览器会话打开笔记页后，图片地址在 `window.__INITIAL_STATE__.note.noteDetailMap` 的 `imageList` 里。拿到 URL 要做两处改动才能下载：`http://` 换成 `https://`（否则被混合内容策略拦掉），以及**沿用 URL 里自带的渲染后缀**。后缀不固定——多数笔记是 `!nd_dft_wlteh_webp_3`，但至少有一篇是 `!nd_dft_wgth_webp_3`，写死会静默失败（`curl` 仍返回 0，落下一个 0 字节文件）。下载时还要带 `Referer: https://www.xiaohongshu.com/`。
 
 ## 参考来源
 

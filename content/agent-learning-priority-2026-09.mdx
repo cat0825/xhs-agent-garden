@@ -203,10 +203,10 @@ Query Rewriting → Hybrid Search（BM25 + 向量）→ Rerank → 上下文组�
 |------|------|
 | `xiaohongshu download` | `Navigation rejected` |
 | `xhs-media`（iPhone UA 抓 HTML） | 抓到「你访问的页面不见了」，0 张图 |
-| curl 原图 URL | 403 |
-| **curl 原图 URL + `!nd_dft_wlteh_webp_3` 后缀 + Referer** | **200** |
+| curl 原图 URL（剥掉后缀） | 403 |
+| **curl 原图 URL（沿用自带后缀）+ Referer** | **200** |
 
-完整的链路是：浏览器会话打开笔记页 → 读 `window.__INITIAL_STATE__.note.noteDetailMap` 的 `imageList` 拿原图签名 URL → 换成 https 并拼上渲染后缀 → 带 Referer 下载 → 转 png 后逐张读。
+完整的链路是：浏览器会话打开笔记页 → 读 `window.__INITIAL_STATE__.note.noteDetailMap` 的 `imageList` 拿原图签名 URL → 换成 https、沿用 URL 自带的渲染后缀 → 带 Referer 下载 → 转 png 后逐张读。后缀不固定（多数是 `!nd_dft_wlteh_webp_3`，也见过 `!nd_dft_wgth_webp_3`），写死会静默失败，所以下载后要校验文件体积。
 
 ## 参考来源
 
