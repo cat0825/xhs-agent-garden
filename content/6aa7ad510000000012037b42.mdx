@@ -1,0 +1,118 @@
+---
+title: "Agent 大佬的「焚决」：12 周上岸路线（含逐周任务与话术）"
+subtitle: "学习路线 · 小红书笔记归档"
+slug: "6aa7ad510000000012037b42"
+date: "2026-09-14T10:00:00.000Z"
+updated: "2026-09-14T10:00:00.000Z"
+source: eriri
+categories: [学习路线]
+keywords: ["AI-Agent", "学习路线", "12周", "MCP", "LangGraph"]
+tags: ["#agent", "#AI", "#人工智能", "#大模型", "#agent学习路线"]
+---
+
+<Callout variant="info" label="元数据">
+
+- **作者**：芝士奶盖
+- **分类**：学习路线
+- **发布时间**：2026-09-14
+- **原文**：[打开小红书笔记](https://www.xiaohongshu.com/search_result/6aa7ad510000000012037b42)
+- **互动**：♥798 赞
+
+</Callout>
+
+## 前置对话：先别"求路径"
+
+> 问：老师，我想三个月上岸 Agent 开发，求个学习路径。
+> 答：先别"求路径"。我问你，Python 异步会吗？Pydantic 会吗？FastAPI 写过吗？Function Calling 手写过吗？
+> 答：会点 Python，调过 API。
+> 答：行，有救。**按我这条线走，12 周。每天 3-4 小时，周末 6 小时。总 100-120 小时。做不到就别开始。**
+
+## 逐周路线
+
+### 第 1 周 · 打地基（前 3 周别碰框架）
+
+Python 异步、Pydantic v2、FastAPI，**手写一个最小 Agent Loop，50-150 行，不许用 LangChain**。
+
+为什么？"你连'思考 → 行动 → 观察 → 再思考'的循环都没手写过，面试一问就露馅。**Agent 和 Chatbot 的区别就这一句：Chatbot 单次问答，Agent 自主闭环。**"
+
+### 第 2 周 · Function Calling
+
+定义工具 schema，让模型自己选工具、传参数。写 5 个工具：天气、汇率、待办、日历、搜索。**把超时、参数错、模型瞎编工具名全处理一遍。**
+
+### 第 3 周 · MCP
+
+"2026 年 Agent 岗增速最快的技能，面试必问。"用 **FastMCP 写一个文件系统 MCP Server**，能读、写、列目录、搜内容。部署到云函数。**这个项目直接写简历。**
+
+> MCP 和 Function Calling 啥关系？
+> "Function Calling 是模型能力，MCP 是工具的标准封装协议。一个管'能调'，一个管'怎么统一接'。面试爱问这个。"
+
+### 第 4 周 · LangGraph
+
+StateGraph、Node、Edge、条件分支、checkpoint。做个任务规划 Agent：比如"规划周末旅行"，它自己搜目的地、查天气、比价、生成行程，每一步根据结果调下一步。
+
+### 第 5 周 · 加记忆
+
+三层：**工作记忆、会话记忆、长期记忆**。长期记忆用向量库 + 结构化存储，记住用户偏好和历史决策。面试常问"会话很长 Prompt 爆了怎么办"，你得答得出来。
+
+### 第 6 周 · Agentic RAG
+
+**别搞固定管道**，把 RAG 封成工具，让 Agent 自己决定啥时候检索、检索几次、结果不够咋换查询。现在面试考的是"**Agentic RAG 和 Naive RAG 区别**"，不是"RAG 怎么搭"。
+
+### 第 7 周 · 多 Agent
+
+Supervisor 模式，搭个写作团队：Researcher 搜资料、Writer 写初稿、Reviewer 挑毛病、Supervisor 协调。Anthropic 都发报告了，多 Agent 复杂任务更强。**但别滥用，通信成本很高。**
+
+> 多 Agent 是不是越复杂越牛逼？
+> "不是。简单任务用多 Agent 是找死。面试问'啥时候不该用多 Agent'，你要能说：任务可单线完成、通信开销大于收益、错误定位困难时不用。"
+
+### 第 8 周 · 评估和可观测性
+
+Langfuse 追调用链，RAGAS 评检索和生成。写一份可靠性报告：正常指标、对抗测试、失败模式。**没 eval 的系统就是 demo，面试官一听就知道。**
+
+### 第 9 周 · 部署和安全
+
+Docker 打包，FastAPI 暴露接口，流式输出。Guardrails 防 Prompt 注入，看 **OWASP LLM Top 10**。成本控制也要会：简单任务便宜模型，复杂任务再上强的。
+
+### 第 10 周 · 打磨项目
+
+别堆数量，精选 **2-3 个**：一个 Agentic RAG，一个多 Agent 协作，一个 MCP Server。每个 README 带架构图，代码有类型注解、错误处理、测试。
+
+> 简历怎么写？
+> "STAR，量化。别写'使用了 LangGraph 和 MCP'，太虚。写'把工具调用准确率从 70% 提到 95%，通过优化工具描述和失败重试'。**面试官只看技术决策和结果。**"
+
+### 第 11-12 周 · 面试冲刺
+
+**高频题清单**：Agent 定义、和 Chatbot/Prompt Chain 区别、Memory 设计、多 Agent 拓扑、LangGraph、MCP 和 Function Calling 关系、Agentic RAG、评估、Prompt 注入。
+
+**项目话术准备三层：What、How、Why。** 为什么选 A 不选 B，遇到啥坑，重做咋改。模拟面试至少两次。
+
+## 工具栈：一以贯之
+
+> Python + LangGraph + FastMCP + ChromaDB/Milvus + FastAPI + Docker
+
+**别今天 CrewAI 明天 AutoGen，分散精力。**
+
+## 三个月真能上岸吗？
+
+"能上初级/中级，中小厂、AI 创业、传统企业 AI 部门有机会。**大厂高 P 别想。** 面试官筛的不是知道最多名词的人，是**能把 Agent 做成可靠系统的人**。"
+
+> 最后一句，少废话，去写代码。有问题随时问，别问百度能搜到的。
+
+## 点评
+
+这份路线和本次采集到的面经高度吻合，且**给了明确的取舍标准**，是本次采集中互动最高（♥798）的学习路线帖。三点最有价值：
+
+1. **前 3 周不许用框架**——先手写 Agent Loop，这是"面试一问就露馅"的分水岭
+2. **工具栈一以贯之**——LangGraph + FastMCP + FastAPI + Docker，别在框架间反复横跳
+3. **"没 eval 的系统就是 demo"**——与 9 月面经里"评测已是标准问项"完全一致
+
+## 原帖长图
+
+<Image src="/static/xhs/6aa7ad510000000012037b42/p01.webp" alt="p01.webp" width={964} height={1920} />
+<Image src="/static/xhs/6aa7ad510000000012037b42/p02.webp" alt="p02.webp" width={976} height={1920} />
+<Image src="/static/xhs/6aa7ad510000000012037b42/p03.webp" alt="p03.webp" width={1016} height={2044} />
+<Image src="/static/xhs/6aa7ad510000000012037b42/p04.webp" alt="p04.webp" width={964} height={1920} />
+<Image src="/static/xhs/6aa7ad510000000012037b42/p05.webp" alt="p05.webp" width={964} height={1920} />
+<Image src="/static/xhs/6aa7ad510000000012037b42/p06.webp" alt="p06.webp" width={980} height={1920} />
+<Image src="/static/xhs/6aa7ad510000000012037b42/p07.webp" alt="p07.webp" width={992} height={1920} />
+
