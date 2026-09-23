@@ -19,9 +19,9 @@ jobs:
       - name: Checkout Commit
         uses: actions/checkout@v4
 
+      # 版本由 package.json 的 packageManager 字段决定（含 sha512 校验）。
+      # 这里再写 version 会触发 "Multiple versions of pnpm specified" 而直接失败。
       - uses: pnpm/action-setup@v4
-        with:
-          version: 9
 
       - name: Use Node.js
         uses: actions/setup-node@v4
